@@ -10,9 +10,14 @@ public class ObstacleSpawner : MonoBehaviour
     private float minX = -2f, maxX = 2f; // 장애물이 생성될 수 있는 가로 위치 범위
     [SerializeField]
     private float minY = -2f, maxY = 5.25f; // 장애물이 생성될 세로 위치(높이)
-    [SerializeField]
+
+    private MemoryPool memoryPool;
     private float lastSpawnTime = 0f; // 마지막으로 장애물을 생성한 시간 기록
 
+    private void Awake() 
+    {
+        memoryPool = new MemoryPool(obstaclePrefab);
+    }
 
     // Start는 게임 시작 시 한 번 실행됨
     void Start()
@@ -39,8 +44,12 @@ public class ObstacleSpawner : MonoBehaviour
         Vector3 end = new Vector3(Random.Range(minX, maxX), minY, 0f);
 
         // 장애물 프리팹을 start 위치에 생성함 (회전 없이)
-        GameObject clone = Instantiate(obstaclePrefab, start, Quaternion.identity);
+        GameObject clone = memoryPool.ActivatePoolItem(start);
         clone.GetComponent<Obstacle>().Setup(this, start, end);
+    }
 
+    public void DeactivateObject(GameObject clone)
+    {
+        memoryPool.DeactivatePoolItem(clone);
     }
 }
