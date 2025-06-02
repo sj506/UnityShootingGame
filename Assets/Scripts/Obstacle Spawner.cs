@@ -3,6 +3,8 @@ using UnityEngine;
 public class ObstacleSpawner : MonoBehaviour
 {
     [SerializeField]
+    private GameController gameController;
+    [SerializeField]
     private GameObject obstaclePrefab; // 생성할 장애물 프리팹을 에디터에서 지정할 수 있게 함
     [SerializeField]
     private float currentSpawnTime = 2f; // 장애물을 생성하는 시간 간격(초)
@@ -28,6 +30,8 @@ public class ObstacleSpawner : MonoBehaviour
     // Update는 매 프레임마다 실행됨 (초당 여러 번)
     void Update()
     {
+        if (gameController.IsGameStart == false) return;
+
         // 현재 시간과 마지막 생성 시간의 차이가 지정한 시간 간격보다 크면
         if(Time.time - lastSpawnTime > currentSpawnTime)
         {

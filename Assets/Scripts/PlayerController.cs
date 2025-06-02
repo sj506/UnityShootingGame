@@ -3,6 +3,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     [SerializeField]
+    private GameController gameController;
+    [SerializeField]
     private Transform left, right; 
     // 왼쪽·오른쪽 한계 지점 (씬에서 오브젝트로 지정)
 
@@ -21,7 +23,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // Update: 매 프레임마다 실행됨
+        if (gameController.IsGameStart == false) return;
 
         if (Input.GetMouseButtonDown(0)) 
         {
