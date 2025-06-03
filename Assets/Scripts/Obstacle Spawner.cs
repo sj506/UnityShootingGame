@@ -30,7 +30,7 @@ public class ObstacleSpawner : MonoBehaviour
     // Update는 매 프레임마다 실행됨 (초당 여러 번)
     void Update()
     {
-        if (gameController.IsGameStart == false) return;
+        if (gameController.IsGameStart == false || gameController.IsGameOver == true) return;
 
         // 현재 시간과 마지막 생성 시간의 차이가 지정한 시간 간격보다 크면
         if(Time.time - lastSpawnTime > currentSpawnTime)
@@ -54,6 +54,7 @@ public class ObstacleSpawner : MonoBehaviour
 
     public void DeactivateObject(GameObject clone)
     {
+        gameController.Score++;
         memoryPool.DeactivatePoolItem(clone);
     }
 }

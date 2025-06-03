@@ -13,8 +13,19 @@ public class PlayerController : MonoBehaviour
     // 움직이는 속도
 
     [SerializeField]
-    private Vector3 moveDirection = Vector3.right; 
+    private Vector3 moveDirection = Vector3.right;
     // 초기 이동 방향 (오른쪽)
+
+    private new Collider2D collider2D;
+    private SpriteRenderer spriteRenderer;
+    private ParticleSystem dieEffect;
+
+    private void Awake() {
+        collider2D = GetComponent<Collider2D>();
+        spriteRenderer = GetComponentInChildren<SpriteRenderer>();
+        dieEffect = GetComponentInChildren<ParticleSystem>();
+        dieEffect.Stop();
+    }
 
     void Start()
     {
@@ -23,7 +34,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        if (gameController.IsGameStart == false) return;
+        if (gameController.IsGameStart == false || gameController.IsGameOver == true) return;
 
         if (Input.GetMouseButtonDown(0)) 
         {
@@ -40,10 +51,21 @@ public class PlayerController : MonoBehaviour
             )
             {
                 moveDirection *= -1f;
+                gameController.Score += 2;
             }
         
             transform.position += moveDirection * moveSpeed * Time.deltaTime;
             // moveSpeed * Time.deltaTime: 초당 속도로 이동 (프레임 독립)
         
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        if (collision.CompareTag("Obstacle"))
+        {
+            collider2D.enabled = false;
+            spriteRenderer.enabled = false;
+            dieEffect.Play();
+            gameController.GameOver();
+        }
     }
 }
