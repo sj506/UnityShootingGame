@@ -31,6 +31,14 @@ public class GameController : MonoBehaviour
 
     private IEnumerator Start()
     {
+
+        if(Constants.IsDeactivateMain == true) 
+        {
+            GameStart();
+
+            yield break;
+        }
+
         while (true) 
         {
             if (Input.GetMouseButtonDown(0))
@@ -56,6 +64,7 @@ public class GameController : MonoBehaviour
 
         IsGameOver = true;
         panelGameStart.SetActive(true);
+        textBestScore.gameObject.SetActive(true);
 
         int bestScore = PlayerPrefs.GetInt(Constants.BestScore);
         if(score > bestScore)
@@ -77,6 +86,7 @@ public class GameController : MonoBehaviour
             {
                 if (Input.GetMouseButtonDown(0))
                 {
+                    Constants.IsDeactivateMain = true;
                     UnityEngine.SceneManagement.SceneManager.LoadScene(0);
                     yield break;
                 }

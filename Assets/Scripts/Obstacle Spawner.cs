@@ -9,12 +9,19 @@ public class ObstacleSpawner : MonoBehaviour
     [SerializeField]
     private float currentSpawnTime = 2f; // 장애물을 생성하는 시간 간격(초)
     [SerializeField]
+    private float minSpawnTime = 0.25f; // 최소 생성 주기기
+    [SerializeField]
+    private float spawnTimeDecreas = 0.1f; // 생성 주기 감소량
+    [SerializeField]
+    private float decreaseTime = 5f;    // 생성 주기 감소 주기
+    [SerializeField]
     private float minX = -2f, maxX = 2f; // 장애물이 생성될 수 있는 가로 위치 범위
     [SerializeField]
     private float minY = -2f, maxY = 5.25f; // 장애물이 생성될 세로 위치(높이)
 
     private MemoryPool memoryPool;
     private float lastSpawnTime = 0f; // 마지막으로 장애물을 생성한 시간 기록
+    private float lastTime = 0f;
 
     private void Awake() 
     {
@@ -36,8 +43,23 @@ public class ObstacleSpawner : MonoBehaviour
         if(Time.time - lastSpawnTime > currentSpawnTime)
         {
             lastSpawnTime = Time.time; // 마지막 생성 시간을 현재 시간으로 갱신
-            SpawnObject(); // 장애물을 생성하는 함수 호출
+
+            // 20% 확률로 2~4개의 장애물이 한꺼번에 생성된다.
+            int spawnCount = Random.value > 0.8f ? Random.Range(2, 5) : 1;
+            for (int i = 0; i < spawnCount; ++i) 
+            {
+                SpawnObject(); // 장애물을 생성하는 함수 호출
+            }
+
         }
+        if (currentSpawnTime <= minSpawnTime) return;
+
+        if(Time.time - lastTime > decreaseTime)
+        {
+            lastTime = Time.time;
+            currentSpawnTime -= spawnTimeDecreas;
+        }
+
     }
 
     // 장애물을 생성하는 함수

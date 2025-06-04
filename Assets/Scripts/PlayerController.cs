@@ -16,11 +16,19 @@ public class PlayerController : MonoBehaviour
     private Vector3 moveDirection = Vector3.right;
     // 초기 이동 방향 (오른쪽)
 
+    [SerializeField]
+    private AudioClip directionSound;
+
+    [SerializeField]
+    private AudioClip dieSound;
+
     private new Collider2D collider2D;
     private SpriteRenderer spriteRenderer;
     private ParticleSystem dieEffect;
+    private AudioSource audioSource;
 
     private void Awake() {
+        audioSource = GetComponent<AudioSource>();
         collider2D = GetComponent<Collider2D>();
         spriteRenderer = GetComponentInChildren<SpriteRenderer>();
         dieEffect = GetComponentInChildren<ParticleSystem>();
@@ -38,6 +46,7 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetMouseButtonDown(0)) 
         {
+            audioSource.PlayOneShot(directionSound);
             moveDirection *= -1f;
             // 왼쪽 클릭(또는 모바일 터치)했을 때, 이동 방향 반전
         }
@@ -50,6 +59,7 @@ public class PlayerController : MonoBehaviour
             (moveDirection == Vector3.left && transform.position.x <= left.position.x)
             )
             {
+                // audioSource.PlayOneShot(directionSound);
                 moveDirection *= -1f;
                 gameController.Score += 2;
             }
@@ -64,6 +74,7 @@ public class PlayerController : MonoBehaviour
         {
             collider2D.enabled = false;
             spriteRenderer.enabled = false;
+            audioSource.PlayOneShot(dieSound); // 사망 시 사운드 재생생
             dieEffect.Play();
             gameController.GameOver();
         }
